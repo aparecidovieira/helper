@@ -13,17 +13,27 @@ import os
 
 
 K.set_learning_phase(0)
+
+## Destination of weights 
 export_path = 'new_abies_tree/export/vgg_up_20_75'
+
+## Backbone
+backbone = 'vgg19'
+num_classes = 1
+
 model = models.convert_model(
-    model=models.backbone(backbone_name='vgg19').retinanet(num_classes=1),
+    model=models.backbone(backbone_name=backbone).retinanet(num_classes=num_classes),
     nms=True,
     class_specific_filter=True,
     anchor_params=None
 )
-model.load_weights('/media/hdd/workings-space/keras-retinanet-master/new_abies_tree/vgg19_up_train_20.csv_csv_75.h5')
+
+path_checkpoint = 'new_abies_tree/vgg19_up_train_20.csv_csv_75.h5'
+model.load_weights(path_checkpoint)
 
 print('Output layers', [o.name[:-2] for o in model.outputs])
 print('Input layer', model.inputs[0].name[:-2])
+
 if os.path.isdir(export_path):
     shutil.rmtree(export_path)
 builder = saved_model.builder.SavedModelBuilder(export_path)
